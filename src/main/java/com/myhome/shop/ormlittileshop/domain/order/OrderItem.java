@@ -2,6 +2,7 @@ package com.myhome.shop.ormlittileshop.domain.order;
 
 
 import com.myhome.shop.ormlittileshop.domain.product.Item;
+import com.myhome.shop.ormlittileshop.domain.product.NotEnoughStockException;
 
 import javax.persistence.*;
 
@@ -63,5 +64,36 @@ public class OrderItem {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    //생성 메서드
+    public static OrderItem createOrderItem(Item item, Long orderPrice, int count) throws NotEnoughStockException {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItem(item);
+        orderItem.setOrderPrice(orderPrice);
+        orderItem.setCount(count);
+
+        item.removeStock(count);
+        return orderItem;
+    }
+
+    //주문 취소
+    public void cancel() {
+        getItem().addStock(count);
+    }
+
+    //가격 조회
+    public int getTotalPrice() {
+        return (int) (getOrderPrice() * getCount());
+    }
+
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", orderPrice=" + orderPrice +
+                ", count=" + count +
+                '}';
     }
 }

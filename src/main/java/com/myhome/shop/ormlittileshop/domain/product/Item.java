@@ -17,7 +17,7 @@ public class Item {
 
     private String name;
 
-    private int price;
+    private Long price;
 
     private int stockQuantity;
 
@@ -40,11 +40,11 @@ public class Item {
         this.name = name;
     }
 
-    public int getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
@@ -62,6 +62,19 @@ public class Item {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    //비지니스 로직 함수
+    public void addStock(int quantity) {
+        this.stockQuantity += quantity;
+    }
+
+    public void removeStock(int quantity) throws NotEnoughStockException {
+        int restQuantity = this.stockQuantity - quantity;
+        if(restQuantity < 0) {
+            throw new NotEnoughStockException("need more stock");
+        }
+        this.stockQuantity = restQuantity;
     }
 
     @Override

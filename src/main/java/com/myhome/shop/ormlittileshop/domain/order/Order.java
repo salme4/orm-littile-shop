@@ -1,7 +1,10 @@
 package com.myhome.shop.ormlittileshop.domain.order;
 
 import com.myhome.shop.ormlittileshop.domain.delivery.Delivery;
+import com.myhome.shop.ormlittileshop.domain.delivery.DeliveryStatus;
 import com.myhome.shop.ormlittileshop.domain.member.Member;
+import com.myhome.shop.ormlittileshop.domain.product.NotEnoughStockException;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -88,5 +91,50 @@ public class Order {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    //생성 메서드
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+
+        for (OrderItem orderItem :
+                orderItems) {
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        return order;
+    }
+
+    //주문 취소
+    public void cancel() throws NotEnoughStockException {
+        if(delivery.getStatus() == DeliveryStatus.COMP) {
+            throw new NotEnoughStockException("주문 확정이 되어 취소 할 수 없습니다.");
+        }
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem :
+                orderItems) {
+            orderItem.cancel();
+        }
+    }
+
+    //조회 로직
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for (OrderItem orderItem :
+                orderItems) {
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderDate=" + orderDate +
+                ", status=" + status +
+                '}';
     }
 }

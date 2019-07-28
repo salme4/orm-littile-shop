@@ -29,6 +29,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
@@ -45,6 +51,18 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArguments>
+                        <processor>
+                            org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor
+                        </processor>
+                    </compilerArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
